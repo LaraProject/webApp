@@ -2,7 +2,7 @@
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
-var socket = require('socket.io')(server);
+var io = require('socket.io').listen(server);
 var shell = require('shelljs');
 
 
@@ -13,14 +13,14 @@ app.get('/', function(req, res,next) {
 	res.sendFile(__dirname + '/index.html');
 });
 
-socket.on('connection', function(client) {
+io.sockets.on('connection', function(socket) {
 	console.log('Client connected...');
 
-	client.on('join', function(data) {
+	socket.on('join', function(data) {
 		console.log(data);
 	});
 
-	client.on('message', function(message) {
+	socket.on('reqMessage', function(message) {
 		console.log(message);
 		var stdout = shell.exec('./send.sh "' + message + '"').trim(); //DANGER RCE
 		console.log('----------');
@@ -31,5 +31,6 @@ socket.on('connection', function(client) {
 		socket.emit('newMessage', answerFromLARA);
 	});
 });
+
 
 server.listen(8080); 

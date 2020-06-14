@@ -7,7 +7,7 @@ socket.on('connect', function(data) {
 $('#msgForm').submit(function (e) {
 	e.preventDefault();
 	var message = $('#msgInput').val();
-	socket.emit('message', message);
+	socket.emit('reqMessage', message);
 	who = "me"; 
 	addMsg(who, message); 
 	$('#msgInput').val("").focus();
